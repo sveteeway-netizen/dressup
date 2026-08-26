@@ -484,58 +484,6 @@
     }
 
     /* -------------------------
-       PROCESSING
-    ------------------------- */
-
-    .processing {
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 200;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 30px;
-      text-align: center;
-    }
-
-    .processing.active {
-      display: flex;
-    }
-
-    .loader {
-      width: 42px;
-      height: 42px;
-      border: 2px solid #e5e5e5;
-      border-top-color: #171717;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 22px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .processing-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .processing-text {
-      font-size: 13px;
-      color: #999;
-      max-width: 280px;
-      line-height: 1.5;
-    }
-
-    /* -------------------------
        DESKTOP
     ------------------------- */
 
@@ -653,7 +601,7 @@
           </div>
 
           <div class="upload-description">
-            Лучше фотографировать вещь отдельно
+            Выберите фото вашей вещи
           </div>
         </div>
 
@@ -740,35 +688,7 @@
   </div>
 
 
-  <!-- PROCESSING -->
-  <div
-    class="processing"
-    id="processing"
-  >
-
-    <div class="loader"></div>
-
-    <div class="processing-title">
-      Убираем фон
-    </div>
-
-    <div class="processing-text">
-      AI отделяет вещь от фона. Это может занять немного времени при первом запуске.
-    </div>
-
-  </div>
-
-
-  <!--
-    AI BACKGROUND REMOVAL
-    Библиотека работает прямо в браузере.
-  -->
-  <script type="module">
-
-    import {
-      removeBackground
-    } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
-
+  <script>
 
     /* --------------------------------
        DATA
@@ -840,9 +760,6 @@
 
     const saveButton =
       document.getElementById("saveButton");
-
-    const processing =
-      document.getElementById("processing");
 
 
     /* --------------------------------
@@ -1206,33 +1123,16 @@
         ) return;
 
 
-        processing.classList.add(
-          "active"
-        );
-
-
         try {
 
           /*
-            Удаляем фон.
-            Результат — PNG с прозрачностью.
-          */
-
-          const resultBlob =
-            await removeBackground(
-              selectedFile
-            );
-
-
-          /*
-            Превращаем Blob
-            в data URL, чтобы хранить
-            изображение в localStorage.
+            Преобразуем файл в data URL
+            для сохранения в localStorage
           */
 
           const imageData =
             await blobToDataURL(
-              resultBlob
+              selectedFile
             );
 
 
@@ -1270,13 +1170,7 @@
           console.error(error);
 
           alert(
-            "Не получилось удалить фон. Попробуй другое фото."
-          );
-
-        } finally {
-
-          processing.classList.remove(
-            "active"
+            "Не получилось загрузить фото. Попробуй ещё раз."
           );
 
         }
